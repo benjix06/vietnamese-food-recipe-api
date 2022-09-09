@@ -16,7 +16,7 @@ services:
       - DP_HOST=db
       - DP_NAME=devdb
       - DP_USER=devuser
-      - DP_PASSWORD=mypassword
+      - DP_PASS=mypassword
     depends_on:
       - db
 
