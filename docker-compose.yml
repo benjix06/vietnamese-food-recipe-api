@@ -13,10 +13,10 @@ services:
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
     environment:
-      - DP_HOST=db
-      - DP_NAME=devdb
-      - DP_USER=devuser
-      - DP_PASS=mypassword
+      - DB_HOST=db
+      - DB_NAME=devdb
+      - DB_USER=devuser
+      - DB_PASS=mypassword
     depends_on:
       - db
 
