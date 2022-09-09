@@ -1,10 +1,17 @@
 from django.test import SimpleTestCase
-from app import cal
+from app import calc
 
 
-class CalTest(SimpleTestCase):
+class CalcTests(SimpleTestCase):
+    """Test the calc module"""
     
-    def test_add(self):
-        res = cal.add(5, 4)
+    def test_add_numbers(self):
+        res = calc.add(5, 6)
         
-        self.assertEqual(res, 9)
+        self.assertEqual(res, 11)
+
+    def test_subtract_numbers(self):
+        res = calc.substract(10,15)
+        
+        self.assertEqual(res, 5)
+        
