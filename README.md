@@ -1,1 +1,2 @@
-# vietnamese-food-recipe-api
+# Vietnamese-food-recipe-api
+Recipe API for Vietnamese Food
