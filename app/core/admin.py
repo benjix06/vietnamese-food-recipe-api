@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as translate
 
 from core import models
 
+
 # Register your models here.
 class UserAdmin(BaseUserAdmin):
     """Define the admin pages for users"""
@@ -46,7 +47,7 @@ class UserAdmin(BaseUserAdmin):
         [
             None,
             {
-                'classes' : ['wide'],
+                'classes': ['wide'],
                 'fields': [
                     'email',
                     'password1',
@@ -59,5 +60,6 @@ class UserAdmin(BaseUserAdmin):
             }
         ]
     ]
+
 
 admin.site.register(models.User, UserAdmin)

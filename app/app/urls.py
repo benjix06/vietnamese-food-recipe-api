@@ -24,12 +24,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/schema/', SpectacularAPIView.as_view(), name='api-schema'),
 
-    # User the schema to generate a graphical user interface for the API documentation
+    # User the schema to generate a graphical user interface
+    # for the API documentation
     path(
-            'api/docs/',
-            SpectacularSwaggerView.as_view(url_name='api-schema'),
-            name='api-docs',
-        ),
+        'api/docs/',
+        SpectacularSwaggerView.as_view(url_name='api-schema'),
+        name='api-docs',
+    ),
 
     path('api/user/', include("user.urls"))
 ]

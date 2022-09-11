@@ -11,11 +11,14 @@ from rest_framework import status
 # Getting the full URL path from the views
 CREATE_USER_URL = reverse('user:create')
 
+
 def create_user(**params):
     """Create and return a new user"""
     return get_user_model().objects.create_user(**params)
 
 # Public Test - Unauthenticated request
+
+
 class PublicUserApiTests(TestCase):
     """Test the public feature of the user API"""
 
@@ -63,6 +66,7 @@ class PublicUserApiTests(TestCase):
         res = self.client.post(CREATE_USER_URL, pay_load)
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-        user_exists = get_user_model().objects.filter(email=pay_load['email']).exists()
+        user_exists = get_user_model().objects.filter(
+            email=pay_load['email']).exists()
 
         self.assertFalse(user_exists)
