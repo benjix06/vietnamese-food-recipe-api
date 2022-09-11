@@ -16,7 +16,7 @@ def create_user(**params):
     return get_user_model().objects.create_user(**params)
 
 # Public Test - Unauthenticated request
-class PublicUserApiTest(TestCase):
+class PublicUserApiTests(TestCase):
     """Test the public feature of the user API"""
 
     def setUp(self):

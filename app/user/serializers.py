@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
             },
         }
 
-    # Onlyu get called when the data is valid
+    # Only get called when the data is valid
     def create(self, validated_data):
         """Create and return a user with encrypted password"""
         return get_user_model().objects.create_user(**validated_data)
