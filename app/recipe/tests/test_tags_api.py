@@ -10,18 +10,23 @@ from rest_framework.test import APIClient
 
 from core.models import Tag
 
-from recipe.serializers import *
+from recipe.serializers import TagSerializer
 
 
 TAGS_URL = reverse('recipe:tag-list')
 
 
+def detail_url(tag_id):
+    """Create and return a tag detail URL"""
+    return reverse('recipe:tag-detail', args=[tag_id])
+
+
 def create_user(email='example@example.com', password='secret123'):
     """Create and return a new user"""
-    return get_user_model().object.create_user(email=email, password=password)
+    return get_user_model().objects.create_user(email=email, password=password)
 
 
-class PublicTagApiTests(TestCase):
+class PublicTagsApiTests(TestCase):
     """Test unauthenticated API requests"""
 
     def setUp(self) -> None:
@@ -31,10 +36,10 @@ class PublicTagApiTests(TestCase):
         """Test auth is required for retrieving tag"""
         res = self.client.get(TAGS_URL)
 
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateTagApiTests(TestCase):
+class PrivateTagsApiTests(TestCase):
     """Tehst authenticated API requests"""
 
     def setUp(self):
@@ -66,3 +71,28 @@ class PrivateTagApiTests(TestCase):
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['name'], tag.name)
         self.assertEqual(res.data[0]['id'], tag.id)
+
+    def test_update_tag(self):
+        """Test udpate tag"""
+        tag = Tag.objects.create(user=self.user, name="Dinner")
+        pay_load = {
+            'name': 'Dessert'
+        }
+        url = detail_url(tag.id)
+        res = self.client.patch(url, pay_load)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        tag.refresh_from_db()
+
+        self.assertEqual(tag.name,  pay_load['name'])
+
+    def test_delete_tag(self):
+        """Test deleting a tag"""
+        tag = Tag.objects.create(user=self.user, name="Bun")
+
+        url = detail_url(tag.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        tags = Tag.objects.filter(user=self.user)
+        self.assertFalse(tags.exists())
