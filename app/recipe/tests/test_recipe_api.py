@@ -10,7 +10,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Recipe, Tag, Ingredient, User
+from core.models import Recipe, Tag, Ingredient
 
 from recipe.serializers import RecipeSerializer, RecipeDetailSerializer
 
@@ -352,7 +352,7 @@ class PrivateRecipeAPITests(TestCase):
         res = self.client.patch(url, pay_load, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        new_ingredient = Ingredient.objects.create(
+        new_ingredient = Ingredient.objects.get(
             user=self.user, name='Lemon')
         self.assertIn(new_ingredient, recipe.ingredients.all())
 
@@ -369,7 +369,7 @@ class PrivateRecipeAPITests(TestCase):
             'ingredients': [{'name': 'Chili'}]
         }
         url = detail_url(recipe.id)
-        res = self.client.post(url, pay_load, format='json')
+        res = self.client.patch(url, pay_load, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertIn(ingredient2, recipe.ingredients.all())
