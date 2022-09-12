@@ -2,8 +2,6 @@
 Tesets for a recipe AIPs
 """
 from decimal import Decimal
-from genericpath import exists
-from hashlib import new
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -12,7 +10,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Recipe, Tag
+from core.models import Recipe, Tag, Ingredient
 
 from recipe.serializers import RecipeSerializer, RecipeDetailSerializer
 
@@ -67,7 +65,7 @@ class PrivateRecipeAPITests(TestCase):
             email='user@example.com',
             password='password123',
         )
-        self.client.force_authenticate(user=self.user)
+        self.client.force_authenticate(self.user)
 
     def test_retrieve_recipes(self):
         """Test retrieving a list of recipes"""
@@ -239,7 +237,7 @@ class PrivateRecipeAPITests(TestCase):
             ]
         }
         url = detail_url(recipe.id)
-        # Pathc - partial update request
+        # Patch - partial update request
         res = self.client.patch(url, pay_load, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -255,14 +253,14 @@ class PrivateRecipeAPITests(TestCase):
 
         tag_lunch = Tag.objects.create(user=self.user, name='Lunch')
         pay_load = {
-            'tag': [{'name': 'Lunch'}]
+            'tags': [{'name': 'Lunch'}]
         }
         url = detail_url(recipe.id)
         res = self.client.patch(url, pay_load, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        # self.assertIn(tag_lunch, recipe.tags.all())
-        self.assertIn(tag_breakfast, recipe.tags.all())
+        self.assertIn(tag_lunch, recipe.tags.all())
+        self.assertNotIn(tag_breakfast, recipe.tags.all())
 
     def test_clear_recipe_tag(self):
         """Test clearing a recipe tag"""
@@ -270,9 +268,19 @@ class PrivateRecipeAPITests(TestCase):
         recipe = create_recipe(user=self.user)
         recipe.tags.add(tag)
 
-        pay_load = {'tag': []}
+        pay_load = {'tags': []}
         url = detail_url(recipe.id)
         res = self.client.patch(url, pay_load, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(recipe.tags.count(), 0)
+
+    def test_create_ingredient(self):
+        """Test creating an instance"""
+        user = create_user()
+        ingredient = Ingredient.object.create(
+            user=user,
+            name='Noddle'
+        )
+
+        self.assertEqual(str(ingredient), ingredient.name)

@@ -9,7 +9,7 @@ from core.models import Recipe, Tag
 class TagSerializer(serializers.ModelSerializer):
     """Serialier for tags """
 
-    class Meta():
+    class Meta:
         model = Tag
         fields = ['id', 'name']
         read_only_fields = ['id']
@@ -27,7 +27,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
     def _get_or_create_tags(self, tags, recipe):
-        """Handle getting ocre creating tags as needed"""
+        """Handle getting or creating tags as needed"""
         auth_user = self.context['request'].user
         for tag in tags:
             tag_obj, created = Tag.objects.get_or_create(
@@ -55,7 +55,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
 
         instance.save()
-
         return instance
 
 
