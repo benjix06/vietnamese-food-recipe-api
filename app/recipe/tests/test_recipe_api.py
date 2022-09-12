@@ -340,3 +340,56 @@ class PrivateRecipeAPITests(TestCase):
                 user=self.user
             ).exists()
             self.assertTrue(exists)
+
+    def test_create_ingredient_on_update(self):
+        """Test creating an ingredient when updating a recipe"""
+        recipe = create_recipe(user=self.user)
+
+        pay_load = {
+            'ingredients': [{'name': 'Lemon'}]
+        }
+        url = detail_url(recipe.id)
+        res = self.client.patch(url, pay_load, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        new_ingredient = Ingredient.objects.create(
+            user=self.user, name='Lemon')
+        self.assertIn(new_ingredient, recipe.ingredients.all())
+
+    def test_update_recipe_assign_ingredient(self):
+        """Test assigning an existing ingredient when updating a recipe"""
+        ingredient1 = Ingredient.objects.create(user=self.user, name='Pork')
+        recipe = create_recipe(user=self.user)
+        recipe.ingredients.add(ingredient1)
+
+        ingredient2 = Ingredient.objects.create(user=self.user, name='Chili')
+
+        # Update the ingredient in recipe
+        pay_load = {
+            'ingredients': [{'name': 'Chili'}]
+        }
+        url = detail_url(recipe.id)
+        res = self.client.post(url, pay_load, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn(ingredient2, recipe.ingredients.all())
+        self.assertNotIn(ingredient1, recipe.ingredients.all())
+
+    def test_clear_recipe_ingredient(self):
+        """test clearing a recipe's ingredient"""
+        ingredient = Ingredient.objects.create(user=self.user, name='Chicken')
+
+        recipe = create_recipe(user=self.user)
+        recipe.ingredients.add(ingredient)
+
+        pay_load = {
+            'ingredients': []
+        }
+
+        url = detail_url(recipe.id)
+
+        # Update the ingredient in recipe
+        res = self.client.patch(url, pay_load, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(recipe.ingredients.count(), 0)
