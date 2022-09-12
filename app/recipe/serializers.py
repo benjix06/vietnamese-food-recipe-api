@@ -7,16 +7,16 @@ from core.models import Recipe, Tag, Ingredient
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    """Serialier for Ingredient"""
+    """Serializer for Ingredient"""
 
-    class Meta():
+    class Meta:
         model = Ingredient
         fields = ['id', 'name']
         read_only_fields = ['id']
 
 
 class TagSerializer(serializers.ModelSerializer):
-    """Serialier for tags """
+    """Serializer for Tag"""
 
     class Meta:
         model = Tag

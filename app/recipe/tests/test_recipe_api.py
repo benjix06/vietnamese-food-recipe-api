@@ -294,10 +294,10 @@ class PrivateRecipeAPITests(TestCase):
             'title': 'Lau Chua Cay',
             'time_minutes': 120,
             'price': Decimal('30.00'),
-            'ingredient': [{'name': 'Bun'}, {'name': 'Hai san'}],
+            'ingredients': [{'name': 'Bun'}, {'name': 'Hai san'}],
         }
 
-        res = self.client.post(RECIPES_URL, pay_load)
+        res = self.client.post(RECIPES_URL, pay_load, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         recipes = Recipe.objects.filter(user=self.user)
@@ -305,7 +305,7 @@ class PrivateRecipeAPITests(TestCase):
 
         recipe = recipes[0]
         self.assertEqual(recipe.ingredients.count(), 2)
-        for ingredient in pay_load['ingredient']:
+        for ingredient in pay_load['ingredients']:
             exists = recipe.ingredients.filter(
                 name=ingredient['name'],
                 user=self.user,
@@ -321,7 +321,7 @@ class PrivateRecipeAPITests(TestCase):
             'title': 'Chao',
             'time_minutes': 25,
             'price': Decimal('10.02'),
-            'ingredient': [{'name': 'Rice'}, {'name': 'Water'}],
+            'ingredients': [{'name': 'Rice'}, {'name': 'Water'}],
         }
 
         res = self.client.post(RECIPES_URL, pay_load, format='json')
@@ -334,7 +334,7 @@ class PrivateRecipeAPITests(TestCase):
         self.assertEqual(recipe.ingredients.count(), 2)
         self.assertIn(ingredient, recipe.ingredients.all())
 
-        for ingredient in pay_load['ingredient']:
+        for ingredient in pay_load['ingredients']:
             exists = recipe.ingredients.filter(
                 name=ingredient['name'],
                 user=self.user
