@@ -100,5 +100,5 @@ class RecipeImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
         read_only_fields = ['id']
         extra_kwargs = {
-            'image': {'required': True}
+            'image': {'required': "True"}
         }
